@@ -1,0 +1,13 @@
+(executable
+ (public_name witching_hour)
+ (name main)
+ (libraries witching_hour dream)
+ (preprocess (pps lwt_ppx)))
+(rule
+ (targets template.ml)
+ (deps template.eml.html)
+ (action (run dream_eml %{deps} --workspace %{workspace_root})))
+(rule
+ (alias run)
+ (action
+  (run witching_hour args)))

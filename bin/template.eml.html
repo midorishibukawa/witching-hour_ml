@@ -1,0 +1,55 @@
+let page title body =
+    <html>
+        <head>
+            <script src="https://unpkg.com/htmx.org@1.9.2" 
+                    integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" 
+                    crossorigin="anonymous"></script>
+            <title><%s title %></title>
+        </head>
+        <body>
+            <a href="/">The Witching Hour</a>
+            <main>
+                <%s! body %>
+            </main>
+        </body>
+    </html>
+
+let form meth endpoint inputs req =
+    <form   hx-post="<%s endpoint %>"
+            hx-swap="afterend" 
+            action="<%s endpoint %>"
+            method="<%s meth %>"> 
+        <%s! Dream.csrf_tag req %>
+%   inputs |> List.iter begin fun input ->
+        <%s! input %>
+%   end;
+        <button type="submit">submit</button>
+    </form>
+
+let input name input_type required =
+    <p>
+        <label  for="<%s name %>">
+            <%s name %>
+        </label>
+        <input  id="<%s name %>"
+                name="<%s name %>"
+                type="<%s input_type %>" 
+                <%s if required then "required" else "" %>>
+    </p>
+
+let nav ps =
+    <nav>
+%   ps |> List.iter begin fun p ->
+        <a href="<%s p %>"><%s p %></a>
+%   end;
+    </nav>
+
+let ul ls =
+    <ul>
+%   ls |> List.iter begin fun l ->
+        <li><%s! l %></li>
+%   end;
+    </ul>
+
+let p text =
+    <p><%s text %></p>
