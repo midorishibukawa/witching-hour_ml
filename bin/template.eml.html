@@ -1,5 +1,6 @@
 let page title body =
-    <html>
+    <!DOCTYPE html5>
+    <html lang="en">
     <head>
         <script src="https://unpkg.com/htmx.org@1.9.2" 
                 integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" 
@@ -7,7 +8,11 @@ let page title body =
         <title><%s title %></title>
     </head>
     <body>
-        <a href="/" hx-boost="true" hx-target="main">The Witching Hour</a>
+        <a  href="/" 
+            hx-boost="true" 
+            hx-target="main">
+            The Witching Hour
+        </a>
         <main>
             <%s! body %>
         </main>
@@ -43,7 +48,11 @@ let input name input_type required =
 let nav ps =
     <nav>
 %   ps |> List.iter begin fun p ->
-        <a href="<%s p %>" hx-boost="true" hx-target="main"><%s p %></a>
+        <a  href="<%s p %>" 
+            hx-boost="true" 
+            hx-target="main">
+            <%s p %>
+        </a>
 %   end;
     </nav>
 
