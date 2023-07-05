@@ -1,4 +1,4 @@
-let page title body =
+let page ~title ~body =
     <!DOCTYPE html5>
     <html lang="en">
     <head>
@@ -20,10 +20,10 @@ let page title body =
     </html>
 
 
-let form meth endpoint inputs req =
+let form ~meth ~endpoint ~inputs ~params ~req =
     <form   hx-post="<%s endpoint %>"
             hx-target="main"
-            hx-swap="afterend" 
+            hx-params="<%s params %>"
             action="<%s endpoint %>"
             method="<%s meth %>"> 
         <%s! Dream.csrf_tag req %>
@@ -40,7 +40,7 @@ let input name input_type required =
         </label>
         <input  id="<%s name %>"
                 name="<%s name %>"
-                type="<%s input_type %>" 
+                type="<%s input_type %>"
                 <%s if required then "required" else "" %>>
     </p>
 
