@@ -4,8 +4,8 @@
  (libraries witching_hour caqti-driver-postgresql dream)
  (preprocess (pps lwt_ppx)))
 (rule
- (targets template.ml)
- (deps template.eml.html)
+ (targets templates.ml)
+ (deps templates.eml.html)
  (action (run dream_eml %{deps} --workspace %{workspace_root})))
 (rule
  (alias run)

@@ -3,7 +3,7 @@ module C = Components
 module D = Dream 
 module P = Pages
 module T = Caqti_type
-module WH = Template
+module WH = Templates
 
 let () =
     let handle_htmx ~req body =
