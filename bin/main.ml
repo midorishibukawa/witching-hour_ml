@@ -25,24 +25,13 @@ let () =
 
         (*      SIGNUP      *)
 
-        D.get "/signup" (fun req ->
-            let form  = WH.form  "POST"      "/signup"
-                      [ WH.input "username"  "text"      true 
-                      ; WH.input "email"     "email"     true  
-                      ; WH.input "password"  "password"  true 
-                      ; WH.input "passconf"  "password"  true ]
-                        req 
-            in handle_htmx req form );
+        D.get "/signup" (fun req -> handle_htmx req @@ User.signup_form req);
 
         D.post "/signup" (fun req ->
-            let add_user = 
-                let query = 
-                    let open Caqti_request.Infix in
-                    (T.(tup3 string string string) ->. T.unit)
-                    "INSERT INTO public.users (username, email, password) values ($1, $2, $3);" in
-                fun username email password (module Db : DB) ->
-                    let%lwt unit_or_error = Db.exec query (username, email, password) in 
-                    Caqti_lwt.or_fail unit_or_error
+            let handle_lwt res =
+                match%lwt res with 
+                | Some _ -> D.html @@ WH.p "OK"
+                | None   -> D.html ~status:`Bad_Request @@ WH.p "PASSWORDS DO NOT MATCH"
             in
             match%lwt D.form req with
             | `Ok [ "email",    email
@@ -50,9 +39,8 @@ let () =
                   ; "password", password
                   ; "username", username ] 
                  -> if      password = passconf 
-                    then    
-                        let%lwt () = D.sql req (add_user username email password) in
-                            D.html @@ WH.p "OK" 
+                    then    let res = User.signup req username email password in
+                            handle_lwt res
                     else    D.html ~status:`Bad_Request @@ WH.p "ERROR"
             | _  -> D.html ~status:`Bad_Request 
                  @@ WH.p "INVALID FORM" );
@@ -60,23 +48,9 @@ let () =
 
         (*      SIGNIN      *)
 
-        D.get "/signin" (fun req ->
-            let form  = WH.form  "POST"      "/signin"
-                      [ WH.input "username"  "text"      true
-                      ; WH.input "password"  "password"  true ]
-                        req 
-            in handle_htmx req form );
+        D.get "/signin" (fun req -> handle_htmx req @@ User.signin_form req);
 
         D.post "/signin" (fun req ->
-            let get_user =
-                let query =
-                    let open Caqti_request.Infix in
-                    (T.(tup2 string string) ->? T.string)
-                    "SELECT id FROM public.users WHERE username = $1 AND password = $2" in
-                fun username password (module Db : DB) ->
-                    let%lwt id_or_error = Db.find_opt query (username, password) in
-                    Caqti_lwt.or_fail id_or_error
-            in
             let get_body id = 
                 match id with 
                 | Some id -> D.html @@ WH.p id
@@ -86,7 +60,7 @@ let () =
             match%lwt D.form req with 
             | `Ok [ "password", password
                   ; "username", username ]
-                 -> let%lwt id = D.sql req (get_user username password) in
+                 -> let%lwt id = User.signin req username password in 
                     get_body id
             | _  -> D.html ~status:`Bad_Request @@ WH.p body );
     ]
