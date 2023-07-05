@@ -1,5 +1,5 @@
 module C = Components
-module T = Template
+module T = Templates
 
 let home    = T.nav [ "signup"; "signin" ]
 let signup  = C.signup_form

@@ -1,4 +1,4 @@
-module T = Template
+module T = Templates
 
 let signup_form ~req =
     T.form  
