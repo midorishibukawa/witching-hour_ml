@@ -1,7 +1,7 @@
 (executable
  (public_name witching_hour)
  (name main)
- (libraries witching_hour dream)
+ (libraries witching_hour caqti-driver-postgresql dream)
  (preprocess (pps lwt_ppx)))
 (rule
  (targets template.ml)
