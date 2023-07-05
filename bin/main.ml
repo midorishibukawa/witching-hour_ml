@@ -1,5 +1,7 @@
 module type DB = Caqti_lwt.CONNECTION
+module C = Components
 module D = Dream 
+module P = Pages
 module T = Caqti_type
 module WH = Template
 
@@ -16,12 +18,12 @@ let () =
 
         (*      HOME        *)
 
-        D.get "/" (fun req -> handle_htmx ~req @@ WH.nav [ "signup"; "signin" ]);
+        D.get "/" (fun req -> handle_htmx ~req @@ P.home); 
 
 
         (*      SIGNUP      *)
 
-        D.get "/signup" (fun req -> handle_htmx ~req @@ User.signup_form ~req);
+        D.get "/signup" (fun req -> handle_htmx ~req @@ P.signup ~req);
 
         D.post "/signup" (fun req ->
             let handle_lwt res =
@@ -41,7 +43,7 @@ let () =
 
         (*      SIGNIN      *)
 
-        D.get "/signin" (fun req -> handle_htmx ~req @@ User.signin_form ~req);
+        D.get "/signin" (fun req -> handle_htmx ~req @@ P.signin ~req);
 
         D.post "/signin" (fun req ->
             let get_body id = 

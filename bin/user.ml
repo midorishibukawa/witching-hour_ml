@@ -1,30 +1,6 @@
 module type DB = Caqti_lwt.CONNECTION
 module D = Dream 
 module T = Caqti_type
-module WH = Template
-
-
-let signup_form ~req =
-    WH.form  
-    ~meth:"POST"      
-    ~endpoint:"/signup"
-    ~inputs:[ WH.input "username"  "text"      true 
-            ; WH.input "email"     "email"     true  
-            ; WH.input "password"  "password"  true 
-            ; WH.input "passconf"  "password"  true ]
-    ~params:"not passconf"
-    ~req
-
-
-let signin_form ~req = 
-    WH.form 
-    ~meth:"POST"      
-    ~endpoint:"/signin"
-    ~inputs:[ WH.input "username"  "text"      true
-            ; WH.input "password"  "password"  true ]
-    ~params:"*"
-    ~req
-
 
 let add_user = 
     let query = 
@@ -34,7 +10,6 @@ let add_user =
         fun ~username ~email ~password (module Db : DB) ->
             let%lwt unit_or_error = Db.exec query (username, email, password) in 
             Caqti_lwt.or_fail unit_or_error
-
 
 let get_user =
     let query =
