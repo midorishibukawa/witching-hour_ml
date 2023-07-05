@@ -10,7 +10,7 @@ let () =
                  @@ WH.page "The Witching Hour"
                     body
         | Some _ -> D.html body 
-    in  D.run
+    in  D.run 
     @@  D.logger
     @@  D.sql_pool "postgresql://postgres:postgres@localhost:5432/witching_hour"
     @@  D.memory_sessions
@@ -31,7 +31,7 @@ let () =
             let handle_lwt res =
                 match%lwt res with 
                 | Some _ -> D.html @@ WH.p "OK"
-                | None   -> D.html ~status:`Bad_Request @@ WH.p "PASSWORDS DO NOT MATCH"
+                | None   -> D.html ~status:`Bad_Request @@ WH.p "USER/EMAIL/PASSWORD ALREADY EXISTS"
             in
             match%lwt D.form req with
             | `Ok [ "email",    email
@@ -41,7 +41,7 @@ let () =
                  -> if      password = passconf 
                     then    let res = User.signup req username email password in
                             handle_lwt res
-                    else    D.html ~status:`Bad_Request @@ WH.p "ERROR"
+                    else    D.html ~status:`Bad_Request @@ WH.p "PASSWORDS DO NOT MATCH"
             | _  -> D.html ~status:`Bad_Request 
                  @@ WH.p "INVALID FORM" );
 
