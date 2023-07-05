@@ -1,14 +1,11 @@
-module type DB = Caqti_lwt.CONNECTION
-module C = Components
 module D = Dream 
 module P = Pages
-module T = Caqti_type
-module WH = Templates
+module T = Templates
 
 let () =
     let handle_htmx ~req body =
         match D.header req "HX-Request" with 
-        | None   -> D.html @@ WH.page ~title:"The Witching Hour" ~body
+        | None   -> D.html @@ T.page ~title:"The Witching Hour" ~body
         | Some _ -> D.html body 
     in  D.run 
     @@  D.logger
@@ -29,7 +26,7 @@ let () =
             let handle_lwt res =
                 match%lwt res with 
                 | None       -> D.redirect req "/"
-                | Some error -> D.html ~status:`Bad_Request @@ WH.p error
+                | Some error -> D.html ~status:`Bad_Request @@ T.p error
             in
             match%lwt D.form req with
             | `Ok [ "email",    email
@@ -38,7 +35,7 @@ let () =
                  -> let res = User.signup ~req ~username ~email ~password in
                     handle_lwt res
             | _  -> D.html ~status:`Bad_Request 
-                 @@ WH.p "INVALID FORM" );
+                 @@ T.p "INVALID FORM" );
 
 
         (*      SIGNIN      *)
@@ -49,7 +46,7 @@ let () =
             let get_body id = 
                 match id with 
                 | Some _ -> D.redirect req "/" 
-                | None   -> D.html ~status:`Not_Found @@ WH.p "NOT FOUND"
+                | None   -> D.html ~status:`Not_Found @@ T.p "NOT FOUND"
             in
             let%lwt body = D.body req in
             match%lwt D.form req with 
@@ -57,6 +54,6 @@ let () =
                   ; "username", username ]
                  -> let%lwt id = User.signin ~req ~username ~password in 
                     get_body id
-            | _  -> D.html ~status:`Bad_Request @@ WH.p body );
+            | _  -> D.html ~status:`Bad_Request @@ T.p body );
     ]
 
