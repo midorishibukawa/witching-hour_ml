@@ -8,6 +8,13 @@
  (deps templates.eml.html)
  (action (run dream_eml %{deps} --workspace %{workspace_root})))
 (rule
+  (target static.ml)
+  (deps (source_tree ./static/))
+  (action 
+    (with-stdout-to 
+      %{target}
+      (run ocaml-crunch --mode=plain ./static/))))
+(rule
  (alias run)
  (action
   (run witching_hour args)))

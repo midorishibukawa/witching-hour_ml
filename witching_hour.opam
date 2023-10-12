@@ -12,8 +12,13 @@ bug-reports: "https://github.com/username/reponame/issues"
 depends: [
   "ocaml"
   "dune" {>= "3.8"}
+  "crunch"
   "dream"
   "odoc" {with-doc}
+  "caqti-driver-postgresql"
+  "js_of_ocaml-compiler"
+  "js_of_ocaml"
+  "js_of_ocaml-ppx"
 ]
 build: [
   ["dune" "subst"] {dev}

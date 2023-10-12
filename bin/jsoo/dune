@@ -1,0 +1,6 @@
+(executable
+  (name twenty_fourty_eight)
+  (promote)
+  (modes js)
+  (preprocess (pps js_of_ocaml-ppx))
+  (libraries witching_hour js_of_ocaml js_of_ocaml-compiler))

@@ -6,6 +6,31 @@ let page ~title ~body =
                 integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" 
                 crossorigin="anonymous"></script>
         <title><%s title %></title>
+        <link rel="stylesheet" href="./static/style.css">
+        <script type="module">
+            await import("./jsoo/twenty_fourty_eight.bc.js")
+            let game = newGame(4)
+            const print = () => console.log(gameToStr(game))
+            const reset = size => {
+                game = newGame(size || 4)
+                print()
+            }
+            const mv = dir => { 
+                game = move(dir, game) 
+                print()
+            }
+            print()
+            window.addEventListener("keydown", event =>{
+                event.preventDefault()
+                if (!["h", "j", "k", "l"].includes(event.key)) return
+                switch (event.key) {
+                    case "h": mv(0); break
+                    case "j": mv(1); break 
+                    case "k": mv(2); break 
+                    case "l": mv(3); break 
+                }
+            })
+        </script>
     </head>
     <body>
         <a  href="/" 
@@ -18,7 +43,6 @@ let page ~title ~body =
         </main>
     </body>
     </html>
-
 
 let form ~meth ~endpoint ~inputs ~params ~req =
     <form   hx-post="<%s endpoint %>"

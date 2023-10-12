@@ -7,12 +7,15 @@ let () =
         match D.header req "HX-Request" with 
         | None   -> D.html @@ T.page ~title:"The Witching Hour" ~body
         | Some _ -> D.html body 
-    in  D.run 
+    in  D.run ~tls:true 
     @@  D.logger
     @@  D.sql_pool "postgresql://postgres:postgres@localhost:5432/witching_hour"
     @@  D.memory_sessions
     @@  D.router [
 
+        D.get "/static/**" @@ D.static "./static";
+
+        D.get "/jsoo/**" @@ D.static "./jsoo";
         (*      HOME        *)
 
         D.get "/" (fun req -> handle_htmx ~req @@ P.home); 
@@ -55,5 +58,16 @@ let () =
                  -> let%lwt id = User.signin ~req ~username ~password in 
                     get_body id
             | _  -> D.html ~status:`Bad_Request @@ T.p body );
+
+        D.get "/chatroom" (fun _ ->
+            let rec handle_ws ws =
+                match%lwt D.receive ws with 
+                | Some msg -> 
+                        let msg' = msg in
+                        let _ = D.send ws msg' in 
+                        handle_ws ws
+                | _ -> D.send ws "waiting"
+            in
+            Dream.websocket ~close:false handle_ws);
     ]
 
