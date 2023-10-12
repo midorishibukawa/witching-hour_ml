@@ -28,5 +28,5 @@ setup.log
 # Local OPAM switch
 _opam/
 
-*.bs.js
+*.bc.js
 .envrc
